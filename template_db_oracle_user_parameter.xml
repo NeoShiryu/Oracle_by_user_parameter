@@ -1,0 +1,1649 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>5.0</version>
+    <date>2022-06-28T17:02:32Z</date>
+    <groups>
+        <group>
+            <name>Templates/Databases</name>
+        </group>
+        <group>
+            <name>Templates Sulwork</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Template Oracle by user parameter- Sulwork</template>
+            <name>Template Oracle by user parameter- Sulwork</name>
+            <description>Template Oracle by user parameter</description>
+            <groups>
+                <group>
+                    <name>Templates/Databases</name>
+                </group>
+                <group>
+                    <name>Templates Sulwork</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>Oracle</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>Instancia ativa e aberta</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.ActiveOpen[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>30</delay>
+                    <history>60d</history>
+                    <description>Instancia aberta e permitindo logins.</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{last(0)}&lt;&gt;1</expression>
+                            <name>Database is down on {HOST.HOST}</name>
+                            <priority>DISASTER</priority>
+                            <description>Base desligada.</description>
+                        </trigger>
+                        <trigger>
+                            <expression>{nodata(2m)}=1</expression>
+                            <name>Database is not responding on {HOST.HOST}</name>
+                            <priority>DISASTER</priority>
+                            <description>Base sem responder a mais de 2 minuto.</description>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Alert Log New</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.AlertLogNew[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>30</delay>
+                    <history>60d</history>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <description>Verifica os erros ORA-* (ORA-600, ORA-7445, ORA-1578 (corrupção de bloco) ) do último dia no alert log de bancos a partir da versão 11g.</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{str(none)}=0</expression>
+                            <name>Alert Log {HOST.HOST}</name>
+                            <priority>WARNING</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Alert Log Old</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.AlertLogOld[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>30</delay>
+                    <history>60d</history>
+                    <trends>0</trends>
+                    <status>DISABLED</status>
+                    <value_type>TEXT</value_type>
+                    <description>Verifica os erros ORA-600, ORA-7445 e ORA-1578 (corrupção de bloco) no alert log em bancos até a versão 10g.</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{str(none)}=0</expression>
+                            <name>Alert Log {HOST.HOST}</name>
+                            <priority>WARNING</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Archivelog</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.Archive[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>300</delay>
+                    <status>DISABLED</status>
+                    <value_type>FLOAT</value_type>
+                    <units>MB</units>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{last()}&gt;100</expression>
+                            <name>Archivelog {HOST.HOST}</name>
+                            <priority>WARNING</priority>
+                            <description>HIGH Archivelog generation</description>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Backup Archivelog Status</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.BackupArchivelogStatus[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>0;h0-23</delay>
+                    <history>15d</history>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <description>Status do último backup do archivelog (RMAN) realizado.&#13;
+Verificação ocorrerá a cada 1h.</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{regexp(COMPLETED)}=0 and {regexp(RUNNING)}=0</expression>
+                            <name>Backup Archivelog Status {HOST.HOST}</name>
+                            <priority>HIGH</priority>
+                            <description>Backup NÃO COMPLETADO</description>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Backup Controlfile Status</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.BackupControlfileStatus[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>0;h0-23</delay>
+                    <history>15d</history>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <description>Status do último backup do controlfile (RMAN) realizado.</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{regexp(COMPLETED)}=0 and {regexp(RUNNING)}=0</expression>
+                            <name>Backup Controlfile Status {HOST.HOST}</name>
+                            <priority>HIGH</priority>
+                            <description>Backup do controlfile NÃO COMPLETADO</description>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Backup Database Status</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.BackupDatabaseStatus[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>0;h0-23</delay>
+                    <history>15d</history>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <description>Status do último backup do database (RMAN) realizado.</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{regexp(COMPLETED)}=0 and {regexp(RUNNING)}=0</expression>
+                            <name>Backup Database Status {HOST.HOST}</name>
+                            <priority>HIGH</priority>
+                            <description>Backup database NÃO COMPLETADO</description>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Backup Spfile Status</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.BackupSpfileStatus[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>0;h0-23</delay>
+                    <history>15d</history>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <description>Status do último backup do spfile (RMAN) realizado.</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{regexp(COMPLETED)}=0 and {regexp(RUNNING)}=0</expression>
+                            <name>Backup Spfile Status {HOST.HOST}</name>
+                            <priority>HIGH</priority>
+                            <description>Backup do spfile NÃO COMPLETADO</description>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Waits Buffer Busy</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.BufferBusy[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <value_type>FLOAT</value_type>
+                    <units>s</units>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>CPU Usage per sec</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.CpuUsagePersec[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <value_type>FLOAT</value_type>
+                    <units>s</units>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{time()}&gt;5m and {last()}&gt;300</expression>
+                            <name>Waits CPU</name>
+                            <priority>WARNING</priority>
+                            <description>Alto wait em CPU.</description>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Host CPU Utilization %</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.CpuUtilization[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>300</delay>
+                    <history>60d</history>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <description>Consumo de CPU do servidor</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{last()}&gt;50</expression>
+                            <name>CPU Utilization</name>
+                            <priority>WARNING</priority>
+                            <description>Utilização de mais de 50% de CPU do servidor.</description>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Cursor Cache Hit Ratio</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.CursorCacheHitRatio[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>300</delay>
+                    <history>60d</history>
+                    <status>DISABLED</status>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>DB Hit Ratio</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.Dbhitratio[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>300</delay>
+                    <history>60d</history>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <description>Taxa de acerto (dados em memória - Cache de buffer - SGA). &#13;
+Quanto maior acerto, menos I/O no disco.</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Objetos invalidos</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.dbobjinvalidos[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>300</delay>
+                    <history>60d</history>
+                    <description>Retorna quantidade de objetos inválidos.</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{last()}&gt;90</expression>
+                            <name>Objetos invalidos {HOST.HOST}</name>
+                            <priority>AVERAGE</priority>
+                            <description>Base com mais de 90 objetos inválidos.</description>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>DB Version</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.dbversion[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>43200</delay>
+                    <history>30d</history>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <description>Versão instalada do RDBMS.</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>FRA Space Limit</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.FraLimit[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>18000</delay>
+                    <history>60d</history>
+                    <status>DISABLED</status>
+                    <description>Espaço limite (total) configurado pra FRA.</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>FRA Space Used</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.FraSpaceUsed[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>60</delay>
+                    <status>DISABLED</status>
+                    <description>Espaço atualmente usado pelos archives na FRA.</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Hit ratio - BODY</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.HitratioBody[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>300</delay>
+                    <status>DISABLED</status>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <description>Taxa de acesso (acerto) aos objetos em memória (SGA).</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Hit ratio - DATA DICTIONARY CACHE</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.HitratioDictcache[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>300</delay>
+                    <status>DISABLED</status>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Hit ratio - SQLAREA</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.HitratioSqlarea[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>300</delay>
+                    <status>DISABLED</status>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <description>Taxa de acesso (acerto) aos objetos em memória (SGA).</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Hit ratio - TABLE/PROCEDURE</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.HitratioTableProc[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>300</delay>
+                    <status>DISABLED</status>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <description>Taxa de acesso (acerto) aos objetos em memória (SGA).</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Hit ratio - TRIGGER</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.HitratioTrigger[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>300</delay>
+                    <status>DISABLED</status>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <description>Taxa de acesso (acerto) aos objetos em memória (SGA).</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Instance name</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.InstanceName[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <history>15d</history>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <description>Nome da instância</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Locks</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.Locks[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>60</delay>
+                    <history>30d</history>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <description>Retorna os locks da base, mostrando usuário &quot;travador&quot; e usuário que esta aguardando.</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{str(none,#10)}=0</expression>
+                            <name>Locks on {HOST.HOST}</name>
+                            <priority>AVERAGE</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Waits Log File Sync</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.LogfileSync[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <value_type>FLOAT</value_type>
+                    <units>s</units>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{time()}&gt;5m and {last()}&gt;300</expression>
+                            <name>Waits Log File Sync</name>
+                            <priority>WARNING</priority>
+                            <description>Alto wait de log file sync.</description>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Max Processes</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.Maxprocs[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>18000</delay>
+                    <history>60d</history>
+                    <description>Especifica o número máximo de processos do usuário do sistema operacional que podem se conectar simultaneamente ao Oracle.</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Max Sessions</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.Maxsession[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>18000</delay>
+                    <history>60d</history>
+                    <description>Este parâmetro determina o número máximo de usuários simultâneos no sistema.</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>PGA Aggregate target</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.PgaAggregateTarget[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>300</delay>
+                    <history>60d</history>
+                    <units>B</units>
+                    <description>O valor atual do parâmetro de inicialização PGA_AGGREGATE_TARGET  (PGA).</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>PGA Cache Hit %</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.PgaCacheHit[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>300</delay>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <description>% de acerto na PGA</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>PGA in use</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.PgaInUse[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>300</delay>
+                    <units>B</units>
+                    <description>Indica a quantidade atual de memória PGA consumida por áreas de trabalho.</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Processes</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.ProcNum[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>300</delay>
+                    <history>60d</history>
+                    <description>Quantidade de processos ativos no momento.</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Session Active</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.SessionActive[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>300</delay>
+                    <history>60d</history>
+                    <description>Sessões ativas na base.</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{last()}&gt;10</expression>
+                            <name>Active Session {HOST.HOST}</name>
+                            <status>DISABLED</status>
+                            <priority>WARNING</priority>
+                            <description>DANGER</description>
+                        </trigger>
+                        <trigger>
+                            <expression>{last()}&gt;20</expression>
+                            <name>Active Session {HOST.HOST}</name>
+                            <status>DISABLED</status>
+                            <priority>WARNING</priority>
+                            <description>DANGER</description>
+                        </trigger>
+                        <trigger>
+                            <expression>{last()}&gt;120</expression>
+                            <name>Active Session {HOST.HOST}</name>
+                            <status>DISABLED</status>
+                            <priority>WARNING</priority>
+                            <description>DANGER</description>
+                        </trigger>
+                        <trigger>
+                            <expression>{last()}&gt;200</expression>
+                            <name>Active Session {HOST.HOST}</name>
+                            <status>DISABLED</status>
+                            <priority>WARNING</priority>
+                            <description>DANGER</description>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Sessions</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.Session[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>300</delay>
+                    <history>60d</history>
+                    <description>Número total de sessões na base.</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>SGA buffer cache</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.SgaBufferCache[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>300</delay>
+                    <history>60d</history>
+                    <units>B</units>
+                    <description>Tamanho do buffer cache (SGA).</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>SGA fixed</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.SgaFixed[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>300</delay>
+                    <history>60d</history>
+                    <units>B</units>
+                    <description>Espaço adicional que armazena informações usadas pelos processos de background da instância.</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>SGA java pool</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.SgaJavaPool[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>300</delay>
+                    <history>60d</history>
+                    <units>B</units>
+                    <description>Memória livre no Java Pool (SGA).&#13;
+Java Pool é usado para armazenar procedures Java executadas pela aplicação.</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>SGA large pool</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.SgaLargePool[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>300</delay>
+                    <history>60d</history>
+                    <units>B</units>
+                    <description>Espaço usado pelo Large Pool (SGA).&#13;
+Large Pool é usado para processos em paralelo, processos de servidores compartilhados e etc.</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>SGA log buffer</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.SgaLogBuffer[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>300</delay>
+                    <history>60d</history>
+                    <units>B</units>
+                    <description>Espaço do log buffer (SGA).&#13;
+Log buffer é uma pequena área para os vetores de alteração antes que eles sejam gravadas no redo log do disco.</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>SGA shared pool</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.SgaSharedPool[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>300</delay>
+                    <history>60d</history>
+                    <units>B</units>
+                    <description>Total do Shared Pool (SGA) em uso.</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Shared Pool Free %</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.SharedPoolFree[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>300</delay>
+                    <history>60d</history>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <description>% livre na shared pool</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Size Last Backup</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.SizeBackup[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>43200</delay>
+                    <units>B</units>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Soft Parse Ratio</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.SoftParse[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>300</delay>
+                    <history>30d</history>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <description>% parse ratio</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Tamanho temp</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.TamanhoTemp[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>600</delay>
+                    <history>60d</history>
+                    <description>Tamanho total da tablespace temp ativa.</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{last()}&gt;10240</expression>
+                            <name>Tamanho temp {HOST.HOST}</name>
+                            <priority>INFO</priority>
+                            <description>Tablespace TEMP com mais de 10 GB.</description>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Tamanho fisico total</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.TamanhoTotal[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>600</delay>
+                    <units>B</units>
+                    <description>Tamanho total fisico do banco de dados, considerando datafiles, tempfiles e logs.</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Tamanho undo</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.TamanhoUndo[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>600</delay>
+                    <history>60d</history>
+                    <description>Tamanho total da tablespace undo.</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{last()}&gt;10240</expression>
+                            <name>Tamanho undo {HOST.HOST}</name>
+                            <priority>INFO</priority>
+                            <description>Tablespace UNDO com mais de 10 GB.</description>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Tablespaces</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.TblSpace[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>600</delay>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <description>Retorna as tablespaces com mais de 80% de seu tamanho usados.</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{str(none)}=0</expression>
+                            <name>Tablespaces on {HOST.HOST}</name>
+                            <priority>AVERAGE</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Uptime</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.Uptime[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>300</delay>
+                    <description>Tempo em minutos da instância no ar (ligada).</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{last()}&lt;1</expression>
+                            <name>Uptime on {HOST.HOST}</name>
+                            <priority>HIGH</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Users Connected</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.Userconn[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>300</delay>
+                    <description>Quantidade de usuários conectados na base.</description>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Waits Class Administrative</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.WaitsAdministrative[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <value_type>FLOAT</value_type>
+                    <units>s</units>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Waits Class Application</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.WaitsApplication[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <value_type>FLOAT</value_type>
+                    <units>s</units>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Waits Class Commit</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.WaitsCommit[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <value_type>FLOAT</value_type>
+                    <units>s</units>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Waits Class Concurrency</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.WaitsConcurrency[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <value_type>FLOAT</value_type>
+                    <units>s</units>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Waits Class Configuration</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.WaitsConfiguration[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <value_type>FLOAT</value_type>
+                    <units>s</units>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Waits Controlfile I/O</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.WaitsControfileio[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <value_type>FLOAT</value_type>
+                    <units>s</units>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{time()}&gt;5m and {last()}&gt;300</expression>
+                            <name>Waits Controlfile I/O</name>
+                            <priority>WARNING</priority>
+                            <description>Alto wait controlfile I/O.</description>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Waits Direct Path Read</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.WaitsDirectpathread[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <status>DISABLED</status>
+                    <value_type>FLOAT</value_type>
+                    <units>s</units>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Waiting sessions count</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.WaitSessionCount[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <delay>300</delay>
+                    <history>30d</history>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{last()}&gt;10</expression>
+                            <name>Waiting sessions</name>
+                            <priority>HIGH</priority>
+                            <description>Mais de 10 sessões em espera.</description>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Waits File I/O</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.WaitsFileio[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <status>DISABLED</status>
+                    <value_type>FLOAT</value_type>
+                    <units>s</units>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Waits Class Idle</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.WaitsIdle[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <value_type>FLOAT</value_type>
+                    <units>s</units>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Waits Latch / Mutex</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.WaitsLatchMutex[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <value_type>FLOAT</value_type>
+                    <units>s</units>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Waits Lock Contention</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.WaitsLockContetion[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <value_type>FLOAT</value_type>
+                    <units>s</units>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Waits Log File I/O</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.WaitsLogfileio[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <value_type>FLOAT</value_type>
+                    <units>s</units>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{time()}&gt;5m and {last()}&gt;300</expression>
+                            <name>Waits Log File I/O</name>
+                            <priority>WARNING</priority>
+                            <description>Alto wait log file I/O.</description>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Waits Log File Switch</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.WaitsLogfileswitch[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <value_type>FLOAT</value_type>
+                    <units>s</units>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Waits Multi Block Read</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.WaitsMultiblockRead[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <value_type>FLOAT</value_type>
+                    <units>s</units>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Waits Class Network</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.WaitsNetwork[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <value_type>FLOAT</value_type>
+                    <units>s</units>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Waits Class Other</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.WaitsOthers[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <value_type>FLOAT</value_type>
+                    <units>s</units>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Waits Class Scheduler</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.WaitsScheduler[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <value_type>FLOAT</value_type>
+                    <units>s</units>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Waits Single Block Read</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.WaitsSingleblockRead[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <value_type>FLOAT</value_type>
+                    <units>s</units>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Waits SqlNet</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.WaitsSqlnet[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <value_type>FLOAT</value_type>
+                    <units>s</units>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Waits Class System I/O</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.WaitsSystemio[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <value_type>FLOAT</value_type>
+                    <units>s</units>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Waits Temp I/O</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.WaitsTempIo[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <value_type>FLOAT</value_type>
+                    <units>s</units>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Waits Class User I/O</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>oracle.WaitsUserio[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    <value_type>FLOAT</value_type>
+                    <units>s</units>
+                    <applications>
+                        <application>
+                            <name>Oracle</name>
+                        </application>
+                    </applications>
+                </item>
+            </items>
+            <macros>
+                <macro>
+                    <macro>{$DSN}</macro>
+                    <value>change</value>
+                </macro>
+                <macro>
+                    <macro>{$ORA_PASSWORD}</macro>
+                    <value>change</value>
+                </macro>
+                <macro>
+                    <macro>{$ORA_SERVER}</macro>
+                    <value>127.0.0.1</value>
+                </macro>
+                <macro>
+                    <macro>{$ORA_USER}</macro>
+                    <value>change</value>
+                </macro>
+            </macros>
+        </template>
+    </templates>
+    <triggers>
+        <trigger>
+            <expression>({Template Oracle by user parameter- Sulwork:oracle.FraSpaceUsed[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;].last()}*100/{Template Oracle by user parameter- Sulwork:oracle.FraLimit[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;].last()})&gt;90</expression>
+            <name>Espaço limite na FRA on {HOST.HOST}</name>
+            <priority>HIGH</priority>
+            <description>Atingido 90% da capacidade da FRA.</description>
+        </trigger>
+        <trigger>
+            <expression>{Template Oracle by user parameter- Sulwork:oracle.HitratioTableProc[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;].last()}&lt;50 or {Template Oracle by user parameter- Sulwork:oracle.HitratioTrigger[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;].last()}&lt;50 or {Template Oracle by user parameter- Sulwork:oracle.HitratioSqlarea[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;].last()}&lt;50 or {Template Oracle by user parameter- Sulwork:oracle.HitratioBody[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;].last()}&lt;50</expression>
+            <name>Hit Ratio on {HOST.HOST}</name>
+            <priority>WARNING</priority>
+        </trigger>
+        <trigger>
+            <expression>({Template Oracle by user parameter- Sulwork:oracle.PgaInUse[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;].last()}*100/{Template Oracle by user parameter- Sulwork:oracle.PgaAggregateTarget[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;].last()})&gt;90</expression>
+            <name>PGA Alarm on {HOST.HOST}</name>
+            <status>DISABLED</status>
+            <priority>WARNING</priority>
+        </trigger>
+        <trigger>
+            <expression>({Template Oracle by user parameter- Sulwork:oracle.ProcNum[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;].last()}*100/{Template Oracle by user parameter- Sulwork:oracle.Maxprocs[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;].last()})&gt;80</expression>
+            <name>Process Alarm on {HOST.HOST}</name>
+            <status>DISABLED</status>
+            <priority>AVERAGE</priority>
+        </trigger>
+        <trigger>
+            <expression>({Template Oracle by user parameter- Sulwork:oracle.Session[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;].last()}*100/{Template Oracle by user parameter- Sulwork:oracle.Maxsession[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;].last()})&gt;80</expression>
+            <name>Session Alarm on {HOST.HOST}</name>
+            <status>DISABLED</status>
+            <priority>WARNING</priority>
+        </trigger>
+        <trigger>
+            <expression>({Template Oracle by user parameter- Sulwork:oracle.Session[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;].last()}*100/{Template Oracle by user parameter- Sulwork:oracle.Maxsession[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;].last()})&gt;100</expression>
+            <name>Session Alarm on {HOST.HOST}</name>
+            <status>DISABLED</status>
+            <priority>HIGH</priority>
+        </trigger>
+    </triggers>
+    <graphs>
+        <graph>
+            <name>Archivelog</name>
+            <show_triggers>NO</show_triggers>
+            <ymin_type_1>FIXED</ymin_type_1>
+            <graph_items>
+                <graph_item>
+                    <color>00C800</color>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.Archive[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+        <graph>
+            <name>Hit Ratio</name>
+            <show_work_period>NO</show_work_period>
+            <show_triggers>NO</show_triggers>
+            <ymin_type_1>FIXED</ymin_type_1>
+            <ymax_type_1>FIXED</ymax_type_1>
+            <graph_items>
+                <graph_item>
+                    <color>009900</color>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.HitratioTableProc[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>1</sortorder>
+                    <color>FFFF33</color>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.HitratioBody[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>2</sortorder>
+                    <color>FFCCFF</color>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.HitratioSqlarea[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>3</sortorder>
+                    <color>3333FF</color>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.HitratioTrigger[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+        <graph>
+            <name>PGA</name>
+            <show_work_period>NO</show_work_period>
+            <show_triggers>NO</show_triggers>
+            <ymin_type_1>FIXED</ymin_type_1>
+            <graph_items>
+                <graph_item>
+                    <color>00CC00</color>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.PgaInUse[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+        <graph>
+            <name>Session/Process</name>
+            <show_work_period>NO</show_work_period>
+            <show_triggers>NO</show_triggers>
+            <ymin_type_1>FIXED</ymin_type_1>
+            <graph_items>
+                <graph_item>
+                    <color>0000DD</color>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.Session[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>1</sortorder>
+                    <color>00CC00</color>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.ProcNum[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+        <graph>
+            <name>Sessions</name>
+            <type>STACKED</type>
+            <ymin_type_1>FIXED</ymin_type_1>
+            <graph_items>
+                <graph_item>
+                    <sortorder>2</sortorder>
+                    <color>00BB00</color>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.SessionActive[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+        <graph>
+            <name>SGA Memory Usage</name>
+            <show_work_period>NO</show_work_period>
+            <show_triggers>NO</show_triggers>
+            <type>STACKED</type>
+            <ymin_type_1>FIXED</ymin_type_1>
+            <graph_items>
+                <graph_item>
+                    <color>00BB00</color>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.SgaBufferCache[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>1</sortorder>
+                    <color>EE0000</color>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.SgaFixed[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>2</sortorder>
+                    <color>00DDDD</color>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.SgaJavaPool[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>3</sortorder>
+                    <color>FF66FF</color>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.SgaLargePool[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>4</sortorder>
+                    <color>C8C800</color>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.SgaLogBuffer[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>5</sortorder>
+                    <color>3333FF</color>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.SgaSharedPool[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+        <graph>
+            <name>Tamanho do backup</name>
+            <show_work_period>NO</show_work_period>
+            <show_triggers>NO</show_triggers>
+            <type>STACKED</type>
+            <graph_items>
+                <graph_item>
+                    <sortorder>1</sortorder>
+                    <color>199C0D</color>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.SizeBackup[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+        <graph>
+            <name>Tamanho fisico total</name>
+            <graph_items>
+                <graph_item>
+                    <sortorder>1</sortorder>
+                    <color>199C0D</color>
+                    <calc_fnc>ALL</calc_fnc>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.TamanhoTotal[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+        <graph>
+            <name>Wait Class</name>
+            <graph_items>
+                <graph_item>
+                    <color>FC6EA3</color>
+                    <calc_fnc>MAX</calc_fnc>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.WaitsAdministrative[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>1</sortorder>
+                    <color>6C59DC</color>
+                    <calc_fnc>MAX</calc_fnc>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.WaitsApplication[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>2</sortorder>
+                    <color>C7A72D</color>
+                    <calc_fnc>MAX</calc_fnc>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.WaitsCommit[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>3</sortorder>
+                    <color>BA2A5D</color>
+                    <calc_fnc>MAX</calc_fnc>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.WaitsConcurrency[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>4</sortorder>
+                    <color>F230E0</color>
+                    <calc_fnc>MAX</calc_fnc>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.WaitsConfiguration[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>5</sortorder>
+                    <color>5CCD18</color>
+                    <calc_fnc>MAX</calc_fnc>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.WaitsIdle[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>6</sortorder>
+                    <color>BB2A02</color>
+                    <calc_fnc>MAX</calc_fnc>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.WaitsNetwork[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>7</sortorder>
+                    <color>AC41A5</color>
+                    <calc_fnc>MAX</calc_fnc>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.WaitsOthers[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>8</sortorder>
+                    <color>89ABF8</color>
+                    <calc_fnc>MAX</calc_fnc>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.WaitsScheduler[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>9</sortorder>
+                    <color>7EC25C</color>
+                    <calc_fnc>MAX</calc_fnc>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.WaitsSystemio[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>10</sortorder>
+                    <color>3165D5</color>
+                    <calc_fnc>MAX</calc_fnc>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.WaitsUserio[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>11</sortorder>
+                    <color>FFEBEE</color>
+                    <calc_fnc>MAX</calc_fnc>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.CpuUsagePersec[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+        <graph>
+            <name>Wait Events</name>
+            <graph_items>
+                <graph_item>
+                    <color>F230E0</color>
+                    <calc_fnc>MAX</calc_fnc>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.BufferBusy[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>1</sortorder>
+                    <color>5CCD18</color>
+                    <calc_fnc>MAX</calc_fnc>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.WaitsControfileio[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>2</sortorder>
+                    <color>BB2A02</color>
+                    <calc_fnc>MAX</calc_fnc>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.WaitsLatchMutex[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>3</sortorder>
+                    <color>AC41A5</color>
+                    <calc_fnc>MAX</calc_fnc>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.WaitsLockContetion[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>4</sortorder>
+                    <color>89ABF8</color>
+                    <calc_fnc>MAX</calc_fnc>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.WaitsLogfileio[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>5</sortorder>
+                    <color>7EC25C</color>
+                    <calc_fnc>MAX</calc_fnc>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.WaitsLogfileswitch[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>6</sortorder>
+                    <color>3165D5</color>
+                    <calc_fnc>MAX</calc_fnc>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.LogfileSync[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>7</sortorder>
+                    <color>79A277</color>
+                    <calc_fnc>MAX</calc_fnc>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.WaitsMultiblockRead[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>8</sortorder>
+                    <color>AA73DE</color>
+                    <calc_fnc>MAX</calc_fnc>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.WaitsSingleblockRead[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>9</sortorder>
+                    <color>FD5434</color>
+                    <calc_fnc>MAX</calc_fnc>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.WaitsSqlnet[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>10</sortorder>
+                    <color>F21C3E</color>
+                    <calc_fnc>MAX</calc_fnc>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.WaitsTempIo[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>11</sortorder>
+                    <color>FFEBEE</color>
+                    <calc_fnc>MAX</calc_fnc>
+                    <item>
+                        <host>Template Oracle by user parameter- Sulwork</host>
+                        <key>oracle.CpuUsagePersec[&quot;{$ORA_USER}&quot;,&quot;{$ORA_PASSWORD}&quot;,&quot;{$ORA_SERVER}&quot;,&quot;{$DSN}&quot;]</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+    </graphs>
+</zabbix_export>
