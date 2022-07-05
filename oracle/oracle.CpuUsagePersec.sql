@@ -1,0 +1,1 @@
+select  To_Number(round(value/100,3)) from v$sysmetric where metric_name='CPU Usage Per Sec' and group_id=2;

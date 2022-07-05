@@ -1,0 +1,1 @@
+SELECT to_char(SUM(decode(pool,NULL,decode(name,'db_block_buffers',(bytes),'buffer_cache',(bytes),0),0))) sga_bufcache FROM V$SGASTAT;

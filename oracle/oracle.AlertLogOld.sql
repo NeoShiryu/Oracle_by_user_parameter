@@ -1,0 +1,1 @@
+SELECT CASE WHEN RTrim(xmlagg(xmlelement(e,line, Chr(10)).extract('//text()')),';') <> Chr(10) THEN RTrim(xmlagg(xmlelement(e,line, Chr(10)).extract('//text()')),';') ELSE 'none' END erros FROM alert_log_external WHERE line LIKE '%ORA-00600%' OR line LIKE '%ORA-07445%' OR line LIKE '%ORA-01578%';

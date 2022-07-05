@@ -1,0 +1,1 @@
+SELECT to_char(decode( unit,'bytes', value, value)) value FROM V$PGASTAT WHERE name IN 'aggregate PGA target parameter';

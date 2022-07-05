@@ -1,0 +1,1 @@
+SELECT (space_limit/1024/1024/1024) limite FROM V$RECOVERY_FILE_DEST;

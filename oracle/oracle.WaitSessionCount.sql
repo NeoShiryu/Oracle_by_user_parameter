@@ -1,0 +1,1 @@
+select count(1) from v$session where username is not null and wait_time = 0 and wait_class# != 6;

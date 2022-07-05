@@ -1,0 +1,1 @@
+SELECT total.bytes-free.bytes total_uso FROM (SELECT bytes FROM v$sgainfo WHERE name='Shared Pool Size') total, (SELECT bytes FROM V$SGASTAT WHERE name = 'free memory' AND pool = 'shared pool') free;

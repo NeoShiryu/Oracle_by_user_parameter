@@ -1,0 +1,1 @@
+SELECT To_Char(decode(unit,'bytes', value, value)) value  FROM V$PGASTAT WHERE name IN 'total PGA inuse';

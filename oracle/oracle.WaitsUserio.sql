@@ -1,0 +1,1 @@
+Select sum(time_waited/100)/sum(total_waits) avg_secunds From v$system_wait_class where wait_class = 'User I/O';

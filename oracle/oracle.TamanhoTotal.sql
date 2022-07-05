@@ -1,0 +1,1 @@
+SELECT Trunc(Sum(used.bytes),2) "Database Size" FROM (SELECT bytes FROM v$datafile UNION ALL SELECT bytes FROM v$tempfile UNION ALL SELECT bytes FROM v$log) used, (SELECT Sum(bytes) AS p FROM dba_free_space) free GROUP BY free.p;

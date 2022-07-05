@@ -1,0 +1,1 @@
+select value from v$sysmetric where metric_name='PGA Cache Hit %' and group_id=2;

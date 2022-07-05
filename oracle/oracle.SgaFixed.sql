@@ -1,0 +1,1 @@
+SELECT to_char(SUM(decode(pool,NULL,decode(name,'fixed_sga',(bytes),0),0)),'999999999.9') sga_fixed FROM V$SGASTAT;

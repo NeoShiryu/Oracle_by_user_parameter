@@ -1,0 +1,1 @@
+select to_char(case when inst_cnt > 0 then 1 else 0 end, 'FM99999999999999990') retvalue from (select count(*) inst_cnt from v$instance where status = 'OPEN' and logins = 'ALLOWED' and database_status = 'ACTIVE');

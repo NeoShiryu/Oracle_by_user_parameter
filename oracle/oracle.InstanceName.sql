@@ -1,0 +1,1 @@
+select to_char(instance_name) from v$instance;

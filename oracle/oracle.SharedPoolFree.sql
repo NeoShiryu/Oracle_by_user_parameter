@@ -1,0 +1,1 @@
+select value from v$sysmetric where metric_name='Shared Pool Free %' and group_id=2;

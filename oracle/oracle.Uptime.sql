@@ -1,0 +1,1 @@
+SELECT to_char(Round(24*60*(sysdate-startup_time)))  FROM v$instance;

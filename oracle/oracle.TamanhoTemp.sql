@@ -1,0 +1,1 @@
+SELECT Round(bytes/1024/1024) FROM dba_temp_files WHERE tablespace_name = (SELECT property_value FROM DATABASE_PROPERTIES WHERE PROPERTY_NAME = 'DEFAULT_TEMP_TABLESPACE');

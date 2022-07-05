@@ -1,0 +1,1 @@
+SELECT Round(Sum((ddf.BYTES)/1024/1024)) tam_total FROM v$tablespace dt, v$datafile ddf WHERE dt.ts# = ddf.ts# AND dt.name IN (SELECT Value from v$parameter where NAME='undo_tablespace');

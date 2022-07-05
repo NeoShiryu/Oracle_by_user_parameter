@@ -1,0 +1,1 @@
+SELECT sum(decode(event,'direct path read',average_wait,0))/100 FROM GV$system_event WHERE event not in ('SQL*Net message from client','SQL*Net more data from client','pmon timer', 'rdbms ipc message','rdbms ipc reply', 'smon timer');

@@ -1,0 +1,1 @@
+select Trunc(Value,2) from v$sysmetric where metric_name='Host CPU Utilization (%)' and group_id=2;

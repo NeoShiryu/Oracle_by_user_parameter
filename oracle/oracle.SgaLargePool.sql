@@ -1,0 +1,1 @@
+SELECT to_char(ROUND(SUM(decode(pool,'large pool',(bytes),0)),2)) sga_lpool FROM V$SGASTAT;

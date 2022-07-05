@@ -1,0 +1,1 @@
+select value "maxprocs" from v$parameter where name ='processes';

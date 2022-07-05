@@ -1,0 +1,1 @@
+SELECT to_char(ROUND(SUM(decode(pool,'java pool',(bytes),0)),2)) sga_jpool FROM V$SGASTAT;

@@ -1,0 +1,1 @@
+select value from v$sysmetric where metric_name='Cursor Cache Hit Ratio' and group_id=2;

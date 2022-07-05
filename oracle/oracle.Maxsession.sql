@@ -1,0 +1,1 @@
+select value "maxsess" from v$parameter where name ='sessions';
