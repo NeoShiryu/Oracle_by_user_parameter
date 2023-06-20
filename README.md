@@ -1,4 +1,4 @@
-this template was tested with oracle 11c and zabbix 5.0.24
+this template was tested with oracle 11c and zabbix 5.0.24 and is Active Zabbix Agent
 
 here what you need to do:
 
